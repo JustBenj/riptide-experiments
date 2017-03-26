@@ -23,15 +23,15 @@ class Entity():
 		self.width = width
 def Simulator():
 	rospy.init_node('listener', anonymous=True)
-	rospy.Subscriber("command/accel", String, callback)
+	rospy.Subscriber("command/command", String, callback)
 	load_entities()
+
 	#Always keep robot as ent. 0
 	robot = entities[0]
 	print "mapping"
 	simmap = SimulatorMap.SimulatorMap(entities, FOV)
 	debug_viewer = DebugViewer.DebugViewer(entities, FOV)
 
-	#Viewport = 
 	print "Past map creation"
 	#time.sleep(0.1)
 	while 1:
@@ -70,17 +70,17 @@ def load_entities():
 def callback(data):
 	print "callback"
 	direction = data.data
-	if direction is "forward":
+	if direction is "tx+":
 		updateRobotPosition(entities[0], ROBOT_SPEED, 0)
-	elif direction is "backward":
+	elif direction is "tx-":
 		updateRobotPosition(entities[0], -1 * ROBOT_SPEED, 0)
-	elif direction is "left":
+	elif direction is "ty-":
 		updateRobotPosition(entities[0], ROBOT_SPEED, 1)
-	elif direction is "right":
+	elif direction is "tz-":
 		updateRobotPosition(entities[0], -1 * ROBOT_SPEED, 1)
-	elif direction is "rrotate":
+	elif direction is "rx+":
 		entities[0].orientation -= ROBOT_ROTATE_SPEED
-	elif direction is "lrotate":
+	elif direction is "rx-":
 		entities[0].orientation += ROBOT_ROTATE_SPEED
 
 if __name__ == '__main__':
