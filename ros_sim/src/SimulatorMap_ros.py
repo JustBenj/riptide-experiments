@@ -1,4 +1,4 @@
-#import rospy
+#!/usr/bin/python
 import sys
 import cv2
 import numpy as np
@@ -7,6 +7,8 @@ import thread
 import math
 import rospy
 from sensor_msgs.msg import Image
+import os
+import inspect
 from cv_bridge import CvBridge, CvBridgeError
 
 WINDOW_SIZE = 800
@@ -23,6 +25,11 @@ class SimulatorMap:
 	entity_image_map_offset_y = None
 
 	def __init__(self,entities, fov):
+		#self.dir = os.path.dirname(__file__)
+		#self.dir = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
+		#self.dir = os.path.realpath(__file__)
+		#self.dir = os.path.dirname(sys.argv[0])
+		self.dir = ""
 		self.bridge = CvBridge()
 		self.map_pub = rospy.Publisher('map_view', Image, queue_size=10)
 		self.entities_ref = entities
@@ -189,12 +196,13 @@ class SimulatorMap:
 		return np.sqrt(np.square(ent1.x_pos - ent2.x_pos) + np.square(ent1.y_pos - ent2.y_pos))
 	def create_map_icon_dictionary(self):
 
-		redb_map = cv2.imread("mapicons/redb_map.png", -1)
-		greenb_map = cv2.imread("mapicons/greenb_map.png", -1)
-		yellowb_map = cv2.imread("mapicons/yellowb_map.png", -1)
-		gate_map = cv2.imread("mapicons/gate_map.png", -1)
-		robot_map = cv2.imread("mapicons/robot_map.png", -1)
-		ofm_map = cv2.imread("mapicons/ofm_map.png", -1)
+		redb_map = cv2.imread(os.path.join(self.dir,"mapicons/redb_map.png"), -1)
+		print os.path.join(self.dir,"/mapicons/redb_map.png")
+		greenb_map = cv2.imread(os.path.join(self.dir,"mapicons/greenb_map.png"), -1)
+		yellowb_map = cv2.imread(os.path.join(self.dir,"mapicons/yellowb_map.png"), -1)
+		gate_map = cv2.imread(os.path.join(self.dir,"mapicons/gate_map.png"), -1)
+		robot_map = cv2.imread(os.path.join(self.dir,"mapicons/robot_map.png"), -1)
+		ofm_map = cv2.imread(os.path.join(self.dir,"mapicons/ofm_map.png"), -1)
 		self.robot_default_image = robot_map
 
 		self.map_icon_dictionary['redb'] = redb_map
