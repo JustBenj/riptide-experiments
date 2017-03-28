@@ -1,19 +1,23 @@
 import rospy
 import sys
 import cv2
-import SimulatorMap
+import SimulatorMap_ros
 import numpy as np
 import time
-import DebugViewer
+import DebugViewer_ros
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
 
 entities = []
 FRAME_RATE = 20
-ROBOT_SPEED = 10 #no units
+ROBOT_SPEED = 2 #no units
 ROBOT_ROTATE_SPEED = 0.01
 FOV = 50
+
 class Entity():
 	def __init__(self, name, x_pos, y_pos, spherical, orientation, floor_object, width):
+
 		self.name = name
 		self.x_pos = x_pos
 		self.y_pos = y_pos
@@ -21,6 +25,7 @@ class Entity():
 		self.orientation = orientation
 		self.floor_object = floor_object
 		self.width = width
+
 def Simulator():
 	rospy.init_node('listener', anonymous=True)
 	rospy.Subscriber("command/command", String, callback)
@@ -29,25 +34,26 @@ def Simulator():
 	#Always keep robot as ent. 0
 	robot = entities[0]
 	print "mapping"
-	simmap = SimulatorMap.SimulatorMap(entities, FOV)
-	debug_viewer = DebugViewer.DebugViewer(entities, FOV)
-
+	simmap = SimulatorMap_ros.SimulatorMap(entities, FOV)
+	debug_viewer = DebugViewer_ros.DebugViewer(entities, FOV)
 	print "Past map creation"
-	#time.sleep(0.1)
-	while 1:
+	rate = rospy.Rate(10) # 10hz
+	while not rospy.is_shutdown():
 		start = time.time()
 		simmap.handle_robot_rotation()
 		simmap.draw_map()
 		debug_viewer.update_view_window()
-		rospy.spin()
+		print robot.x_pos
+		rate.sleep()
 
 def update_robot_position(robot, speed, direction):
-	#direction = 1 for side to side and 0 for forward/backward
+
 	robot.x_pos += int(speed * np.cos(robot.orientation + direction * np.pi / 2.0))
 	robot.y_pos -= int(speed * np.sin(robot.orientation + direction * np.pi / 2.0))
 	robot.orientation = robot.orientation % (2.0 * np.pi)
 	if robot.orientation < 0:
 		robot.orientation = 2.0 * np.pi + robot.orientation
+
 def load_entities():
 	robot = Entity("robot", 900, 1800, 0, np.pi / 2.3, 0, 10)
 	entities.append(robot)
@@ -68,21 +74,20 @@ def load_entities():
 	entities.append(greenb)
 
 def callback(data):
-	print "callback"
 	direction = data.data
-	if direction is "tx+":
-		updateRobotPosition(entities[0], ROBOT_SPEED, 0)
-	elif direction is "tx-":
-		updateRobotPosition(entities[0], -1 * ROBOT_SPEED, 0)
-	elif direction is "ty-":
-		updateRobotPosition(entities[0], ROBOT_SPEED, 1)
-	elif direction is "tz-":
-		updateRobotPosition(entities[0], -1 * ROBOT_SPEED, 1)
-	elif direction is "rx+":
+
+	if direction == "tx+":
+		update_robot_position(entities[0], ROBOT_SPEED, 0)
+	elif direction == "tx-":
+		update_robot_position(entities[0], -1 * ROBOT_SPEED, 0)
+	elif direction == "ty-":
+		update_robot_position(entities[0], ROBOT_SPEED, 1)
+	elif direction == "ty+":
+		update_robot_position(entities[0], -1 * ROBOT_SPEED, 1)
+	elif direction == 'rx+':
 		entities[0].orientation -= ROBOT_ROTATE_SPEED
-	elif direction is "rx-":
+	elif direction == "rx-":
 		entities[0].orientation += ROBOT_ROTATE_SPEED
 
 if __name__ == '__main__':
-
 	Simulator()
