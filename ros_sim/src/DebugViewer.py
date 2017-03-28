@@ -49,7 +49,6 @@ class DebugViewer:
 			obj_draw_y_pos = WINDOW_SIZE / 2 #change later to make it 3d
 
 			if obj_draw_proportion < 2:
-
 				self.draw_entity(blank_viewport, obj, obj_draw_x_pos, obj_draw_y_pos, obj_draw_proportion)
 		cropped_viewport = np.zeros((CROPPED_WINDOW_SIZE,CROPPED_WINDOW_SIZE,4), np.uint8)
 		cropped_viewport[:] = (255,255,255, 0)
@@ -63,68 +62,52 @@ class DebugViewer:
 		objDrawSizeX = img_width * obj_draw_proportion
 
 		obj_resized = cv2.resize(self.world_item_dictionary[obj.name], None, fx=obj_draw_proportion, fy=obj_draw_proportion, interpolation = cv2.INTER_LINEAR)
-		obj_x_start_loc, obj_x_end_loc, obj_image_x_start_loc, obj_image_x_end_loc, obj_y_dim = self.fix_draw_bounds(image, obj_draw_x_pos, obj_resized)
+		
+		orientation_difference = self.robot.orientation - obj.orientation
 
-		lower_y = WINDOW_SIZE / 2 - obj_y_dim / 2.0
-		upper_y = WINDOW_SIZE / 2 + obj_y_dim / 2.0
+		side = -1
 
-		obj_img_ys = 0
+		if orientation_difference > 0:
+			side = 1
+		else:
+			side = 0
 
-		upper_y,lower_y, obj_img_ys, obj_y_dim, obj_x_end_loc, obj_x_start_loc, obj_image_x_start_loc, obj_image_x_end_loc = self.fix_bounds(upper_y, lower_y, obj_img_ys, obj_y_dim, obj_x_end_loc, obj_x_start_loc, obj_image_x_start_loc, obj_image_x_end_loc)
+		orientation_difference = abs(orientation_difference % (2 * np.pi))
+
+		ang = self.find_angle_from_bot_to_obj(self.robot, obj)
+
+		height_adjustment = obj_resized.shape[0] * (((np.pi / 2.0) - orientation_difference - ang) / (self.fov_rad))
+		if height_adjustment > obj_resized.shape[0] / 10:
+			height_adjustment = obj_resized.shape[0] / 10
+
+		#shape - rows, cols, channels
+
+		outputQuad = None
+		if side:
+			outputQuad = np.array([[0 ,0], [obj_resized.shape[1] - 1, height_adjustment], [ obj_resized.shape[1] - 1, obj_resized.shape[0] - 1 - height_adjustment], [0, obj_resized.shape[0] - 1]], dtype = "float32")
+		else:
+			outputQuad = np.array([[0 ,height_adjustment], [obj_resized.shape[1] - 1, 0], [ obj_resized.shape[1] - 1, obj_resized.shape[0] - 1], [0, obj_resized.shape[0] - 1 - height_adjustment]], dtype = "float32")
+
+		inputQuad = np.array([[0,0], [obj_resized.shape[1] - 1, 0], [obj_resized.shape[1] - 1, obj_resized.shape[0] - 1], [ 0, obj_resized.shape[0] - 1]], dtype = "float32")
+
+		M = cv2.getPerspectiveTransform(inputQuad, outputQuad)
+		warped = cv2.warpPerspective(obj_resized, M, (obj_resized.shape[1] - 1, obj_resized.shape[0] - 1))
+
+		#cv2.putText(warped, str(warped.shape[0]), (20,20), 1, 1, (255,255,255))
+		#cv2.putText(warped, str(warped.shape[1]), (20,40), 1, 1, (255,255,255))
+
+		warped_height = warped.shape[0]
+		warped_width = warped.shape[1]
+
+		lower_y = WINDOW_SIZE / 2.0 - warped_height / 2.0
+		upper_y = lower_y + warped_height
+
+		lower_x = obj_draw_x_pos - warped_width / 2.0
+		upper_x = lower_x + warped_width
 		try:
-			image[lower_y : upper_y, obj_x_start_loc: obj_x_end_loc] = obj_resized[obj_img_ys : obj_y_dim, obj_image_x_start_loc: obj_image_x_end_loc]
+			image[lower_y : upper_y, lower_x: upper_x] = warped[0 : warped_height, 0: warped_width]
 		except:
 			pass
-		
-	def fix_bounds(self, upper_y, lower_y, map_y_start, map_y_end, upper_x, lower_x, map_x_start, map_x_end):
-		while True:
-			if upper_y - lower_y > map_y_end - map_y_start:
-				if lower_y is WINDOW_SIZE:
-					upper_y -=1
-				else:
-					lower_y += 1
-			elif upper_y - lower_y < map_y_end - map_y_start:
-				if lower_y is 0:
-					upper_y += 1
-				else:
-					lower_y -= 1
-
-			elif upper_x - lower_x > map_x_end - map_x_start:
-				if lower_x is WINDOW_SIZE:
-					upper_x -= 1
-				else:
-					lower_x += 1
-
-			elif upper_x - lower_x < map_x_end - map_x_start:
-				if lower_x is 0:
-					upper_x += 1
-				else:
-					lower_x -= 1
-			else:
-				return upper_y, lower_y, map_y_start, map_y_end, upper_x, lower_x, map_x_start, map_x_end
-
-	def fix_draw_bounds(self, canvas, obj_draw_x_pos, objResized):
-		obj_x_dim= objResized.shape[1]
-		canvas_width = int(canvas.shape[1])
-
-		obj_x_start_loc= obj_draw_x_pos - obj_x_dim/ 2.0
-		obj_x_end_loc= obj_draw_x_pos + obj_x_dim/ 2.0
-		obj_y_dim = objResized.shape[0]
-		obj_image_x_start_loc = 0
-		obj_image_x_end_loc = obj_x_dim
-
-		if obj_x_dim/ 2.0 + obj_draw_x_pos > canvas_width:
-			obj_x_start_loc= canvas.shape[1] - obj_draw_x_pos - obj_x_dim/ 2.0
-			obj_x_end_loc= canvas.shape[1]
-			obj_image_x_end_loc = obj_x_end_loc- obj_x_start_loc
-		if obj_draw_x_pos - obj_x_dim/ 2.0 < 0:
-			obj_x_start_loc= 0
-			obj_x_end_loc= obj_draw_x_pos + obj_x_dim/ 2.0
-			obj_image_x_start_loc = obj_x_dim- obj_x_end_loc
-			obj_image_x_end_loc = obj_x_dim
-		obj_y_dim = objResized.shape[0]
-		return int(obj_x_start_loc), int(obj_x_end_loc), int(obj_image_x_start_loc), int(obj_image_x_end_loc), int(obj_y_dim)
-
 
 	def find_angle_from_bot_to_obj(self, robot, ent):
 		dX = ent.x_pos - robot.x_pos

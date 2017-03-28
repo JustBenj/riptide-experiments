@@ -42,11 +42,7 @@ def Simulator():
 		start = time.time()
 		map.handle_robot_rotation()
 		map.draw_map()
-		print "Draw map:"
-		print (time.time() - start)
-		print "Draw Viewport:"
 		debug_viewer.update_view_window()
-		print (time.time() - start)
 
 		if curses_mode:
 			char = screen.getch()
@@ -74,7 +70,7 @@ def update_robot_position(robot, speed, direction):
 	if robot.orientation < 0:
 		robot.orientation = 2.0 * np.pi + robot.orientation
 def load_entities():
-	robot = Entity("robot", 900, 1800, 0, np.pi / 2.3, 0, 10)
+	robot = Entity("robot", 600, 1800, 0, np.pi / 2.3, 0, 10)
 	entities.append(robot)
 
 	gate = Entity("gate",800, 1500,0, -1 * np.pi / 5.0, 0, 50)
