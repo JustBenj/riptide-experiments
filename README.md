@@ -10,9 +10,14 @@ Enjoy.
 
 Publishing Messages:
 
-tx+ - Moves the robot forward
-tx- - Moves the robot backward
-ty- - Moves the robot left
-ty+ - Moves the robot right
-rx+ - Rotates the robot CW
-rx- - Rotates the robot CCW
+	tx+ - Moves the robot forward
+	tx- - Moves the robot backward
+	ty- - Moves the robot left
+	ty+ - Moves the robot right
+	rx+ - Rotates the robot CW
+	rx- - Rotates the robot CCW
+
+Subscribing:
+
+	Viewport topic name:
+		/sim_view
