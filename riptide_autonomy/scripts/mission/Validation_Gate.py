@@ -4,6 +4,7 @@ import smach_ros
 import rospy
 import robosub
 from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
 
 state_image = None
 overlay_pub = None
@@ -13,14 +14,18 @@ bridge = CvBridge()
 class Validation_Gate_ST(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes = ['proceed_ML'])
+        self.subscriber = rospy.Subscriber("/sim_view", Image, self.imageCallback, queue_size = 1)
+        overlay_pub = rospy.Publisher("/output", Image, queue_size = 1)
 
     def execute(self, userdata):
         #Run code to move through validation gate
-        if state_image is not None:
-            overlay = state_image.copy()
-            robosub.findGate(state_image.copy(), None, None, True, overlay)
+        while 1:
+            if state_image is not None:
+                overlay = state_image.copy()
+                robosub.findGate(state_image.copy(), None, None, True, overlay)
 
-            pub.publish(bridge.cv2_to_imgmsg(overlay, "bgr8"))
+                pub.publish(bridge.cv2_to_imgmsg(overlay, "bgr8"))
+                
         #Then return outcome
         return 'proceed_ML'
 
@@ -38,8 +43,7 @@ class Validation_Gate_SM(smach.StateMachine):
 
 
     def __init__(self):
-        self.subscriber = rospy.Subscriber("/sim_view", Image, self.imageCallback, queue_size = 1)
-        overlay_pub = rospy.Publisher("/output", Image, queue_size = 1)
+
         smach.StateMachine.__init__(self, outcomes=['proceed_HL'])
         with self:
             smach.StateMachine.add('VALIDATION_GATE_ST', Validation_Gate_ST(),
