@@ -1,4 +1,4 @@
-# riptide-Mk.2
+# riptide-experiments
 
 Repo for Riptide Mk.2
 
