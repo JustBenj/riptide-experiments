@@ -10,7 +10,7 @@ upper_blazeorange = np.array([15, 255,255])
 
 def pixelsToFeet(pixels):
 	return int(20.019 * math.exp(-0.015 * pixels))
-	
+
 def findMostCircularContour(cnts):
 	minContour = cnts[0]
 	minContourDifference = 100000
@@ -89,7 +89,8 @@ def getRotatedRect(contour, overlay):
 def findGate(frame, lower, upper, blazeOrange, overlay):
 	blur = cv2.GaussianBlur(frame,(5,5),0)
 	hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-	
+	box = None
+
 	mask = cv2.inRange(hsv, lower_blazeorange ,upper_blazeorange)
 	cv2.imshow("mask", mask)
 
@@ -102,22 +103,12 @@ def findGate(frame, lower, upper, blazeOrange, overlay):
 
 		cnt = contours[0]
 		box = getRotatedRect(cnt, overlay)
-    	leg1 = getLegHighPoints(box)
-    	cnt = contours[1]
-    	box = getRotatedRect(cnt, overlay)
-    	leg2 = getLegHighPoints(box)
+		if box is not None:
+			leg1 = getLegHighPoints(box)
+    		cnt = contours[1]
+    		box = getRotatedRect(cnt, overlay)
+    		leg2 = getLegHighPoints(box)
 
-    	cv2.line(overlay, leg1, leg2, (0,255,255), 2)
+    		cv2.line(overlay, leg1, leg2, (0,255,255), 2)
 
 	return
-
-
-
-
-
-
-
-
-
-
-

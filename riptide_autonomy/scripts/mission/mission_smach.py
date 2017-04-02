@@ -22,14 +22,14 @@ def main():
         #                         transitions={'proceed_HL':'VALIDATION_GATE_SM'})
         smach.StateMachine.add('VALIDATION_GATE_SM', Validation_Gate_SM(),
                                  transitions={'proceed_HL':'succeeded_MS'})
-        mission_sm.StateMachine.add('PATH_MARKER_SM', Path_Marker_SM,
-                                transitions={'set_sail':'SET_SAIL_SM',
-                                            'navigate_pass':'NAVIGATE_PASS_SM'},
-                                remapping={'set_sail_status':'set_sail_status',
-                                            'navigate_pass_status':'navigate_pass_status'})
-        mission_sm.StateMachine.add('SET_SAIL_SM', Set_Sail_SM,
-                                transitions={'proceed_HL':'PATH_MARKER_SM',
-                                            'misaligned_HL':'PATH_MARKER_SM'})
+        #mission_sm.StateMachine.add('PATH_MARKER_SM', Path_Marker_SM,
+        #                        transitions={'set_sail':'SET_SAIL_SM',
+        #                                    'navigate_pass':'NAVIGATE_PASS_SM'},
+        #                        remapping={'set_sail_status':'set_sail_status',
+        #                                    'navigate_pass_status':'navigate_pass_status'})
+        #mission_sm.StateMachine.add('SET_SAIL_SM', Set_Sail_SM,
+        #                        transitions={'proceed_HL':'PATH_MARKER_SM',
+        #                                    'misaligned_HL':'PATH_MARKER_SM'})
         # mission_sm.StateMachine.add('NAVIGATE_PASS_SM', NAVIGATE_PASS_SM,
         #                         transitions={'proceed_HL':'PINGER_SM',
         #                                     'misaligned_HL':'PATH_MARKER_SM'})
