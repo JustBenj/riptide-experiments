@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from std_msgs.msg import String
 
-#Part of Validation_Gate_SM
+#Validation Gate State
 class Validation_Gate_ST(smach.State):
     state_image = None
     overlay_pub = None
@@ -73,6 +73,7 @@ class Validation_Gate_ST(smach.State):
         isAligned = False
 
         #Run code to move through validation gate
+
         while not rospy.is_shutdown():
             if (timer < approachTimeout):
                 self.approach()
@@ -86,12 +87,15 @@ class Validation_Gate_ST(smach.State):
         #Then return outcome
         return 'proceed_ML'
 
+#Validation Gate State Machine
 class Validation_Gate_SM(smach.StateMachine):
 
 
     def __init__(self):
 
         smach.StateMachine.__init__(self, outcomes=['proceed_HL'])
+
+        #Add states
         with self:
             smach.StateMachine.add('VALIDATION_GATE_ST', Validation_Gate_ST(),
                                 transitions={'proceed_ML':'proceed_HL'})
