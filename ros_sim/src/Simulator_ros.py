@@ -56,7 +56,7 @@ def update_robot_position(robot, speed, direction):
 		robot.orientation = 2.0 * np.pi + robot.orientation
 
 def load_entities():
-	robot = Entity("robot", 900, 1800, 0, np.pi / 2.3, 0, 10)
+	robot = Entity("robot", 700, 1800, 0, np.pi / 2.3, 0, 10)
 	entities.append(robot)
 
 	gate = Entity("gate",800, 1500,0, -1 * np.pi / 5.0, 0, 50)

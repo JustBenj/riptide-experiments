@@ -40,27 +40,30 @@ class Validation_Gate_ST(smach.State):
 
         if self.state_image is not None:
             overlay = self.state_image.copy()
-            (y, z, theta) = robosub.findGate(self.state_image.copy(), None, None, True, overlay)
+            (y, z, theta) = robosub.findGate(self.state_image.copy(), None, None, True, overlay, True)
             self.overlay_pub.publish(self.bridge.cv2_to_imgmsg(overlay, "bgr8"))
-
+            print (y)
+            print (z)
+            print (theta)
+            print ("\n")
             # TODO: Potential infinite loop. Add timeout or something....!
             #TODO: If can't see anything, return outcome of failure
             if y is not None and y > max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
-            else if y is not None and y < -max_y_error:
+            elif y is not None and y < -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
 
-            else if z is not None and z > max_z_error:
+            elif z is not None and z > max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
-            else if z is not None and z < -max_z_error:
+            elif z is not None and z < -max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_POS)
 
-            else if theta is not None and theta > max_theta_error:
+            elif theta is not None and theta > max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CCW)
-            else if theta is not None and theta < -max_theta_error:
+            elif theta is not None and theta < -max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CW)
             # It should be impossible for theta to be None at this point
-            else if theta is not None:
+            elif theta is not None:
                 return True
 
             return False
@@ -77,7 +80,7 @@ class Validation_Gate_ST(smach.State):
         while not rospy.is_shutdown():
             if (timer < approachTimeout):
                 self.approach()
-            else if not isAligned:
+            elif not isAligned:
                 isAligned = self.align()
             else:
                 self.approach()
