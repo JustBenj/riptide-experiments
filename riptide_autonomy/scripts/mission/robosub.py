@@ -86,7 +86,7 @@ def getRotatedRect(contour, overlay):
 	cv2.drawContours(overlay,[box],0,(255,255,255),2)
 	return box
 
-def findGate(frame, lower, upper, blazeOrange, overlay):
+def drawGateOverlay(frame, lower, upper, blazeOrange, overlay):
 	blur = cv2.GaussianBlur(frame,(5,5),0)
 	hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 	box = None
