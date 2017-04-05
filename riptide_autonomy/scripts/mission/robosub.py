@@ -142,6 +142,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 
 	elif len(contours) == 1:
 		min_x = 9999
+		min_y = 9999
 		x = 0
 		y = 0
 		cnt = contours[0]
