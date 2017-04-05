@@ -4,8 +4,8 @@ import rospy
 import smach
 import smach_ros
 from Validation_Gate import *
-from Set_Sail import *
-from Navigation_Pass import *
+#from Set_Sail import *
+#from Navigation_Pass import *
 from Pinger import *
 
 def main():
@@ -27,26 +27,26 @@ def main():
         smach.StateMachine.add('VALIDATION_GATE_SM', Validation_Gate_SM(),
                     transitions={'proceed_HL':'succeeded_MS'})
 
-        smach.StateMachine.add('PATH_MARKER_SM', Path_Marker_SM(),
-                    transitions={'set_sail_HL':'SET_SAIL_SM',
-                                'navigate_pass_HL':'NAVIGATE_PASS_SM'},
-                    remapping={'set_sail_status_ST':'set_sail_status_SM'})
+        #smach.StateMachine.add('PATH_MARKER_SM', Path_Marker_SM(),
+        #            transitions={'set_sail_HL':'SET_SAIL_SM',
+        #                        'navigate_pass_HL':'NAVIGATE_PASS_SM'},
+        #            remapping={'set_sail_status_ST':'set_sail_status_SM'})
 
-        smach.StateMachine.add('SET_SAIL_SM', Set_Sail_SM(),
-                    transitions={'proceed_HL':'PATH_MARKER_SM'},
-                    remapping={'set_sail_status_ST':'set_sail_status_SM'})
+        #smach.StateMachine.add('SET_SAIL_SM', Set_Sail_SM(),
+        #            transitions={'proceed_HL':'PATH_MARKER_SM'},
+        #           remapping={'set_sail_status_ST':'set_sail_status_SM'})
 
-        smach.StateMachine.add('NAVIGATE_PASS_SM', NAVIGATE_PASS_SM(),
-                    transitions={'proceed_HL':'PINGER_SM'},
-                    remapping={'navigate_pass_status_ST':'navigate_pass_status_SM'})
+        #smach.StateMachine.add('NAVIGATE_PASS_SM', NAVIGATE_PASS_SM(),
+        #            transitions={'proceed_HL':'PINGER_SM'},
+        #            remapping={'navigate_pass_status_ST':'navigate_pass_status_SM'})
 
-        smach.StateMachine.add('PINGER_SM', Pinger_SM,
-                    transitions={'battle_a_squid_HL':'BATTLE_A_SQUID_SM',
-                                'cultivate_pearls_HL': 'CULTIVATE_PEARLS_SM',
-                                'collect_and_classify_HL':'COLLECT_AND_CLASIFY_SM'},
-                    remapping={'squid_status_ST':'squid_status_SM',
-                                'pearl_status_ST':'pearl_status_SM',
-                                'collect_status_ST':'collect_status_SM'})
+        #smach.StateMachine.add('PINGER_SM', Pinger_SM,
+        #            transitions={'battle_a_squid_HL':'BATTLE_A_SQUID_SM',
+        #                        'cultivate_pearls_HL': 'CULTIVATE_PEARLS_SM',
+        #                        'collect_and_classify_HL':'COLLECT_AND_CLASIFY_SM'},
+        #            remapping={'squid_status_ST':'squid_status_SM',
+        #                        'pearl_status_ST':'pearl_status_SM',
+        #                        'collect_status_ST':'collect_status_SM'})
 
         # mission_sm.StateMachine.add('BATTLE_A_SQUID_SM', Battle_A_Squid_SM,
         #                         transitions={'proceed_HL':'PINGER_SM',

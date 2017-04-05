@@ -34,7 +34,7 @@ class Validation_Gate_ST(smach.State):
         while not rospy.is_shutdown():
             if self.state_image is not None:
                 overlay = self.state_image.copy()
-                robosub.findGate(self.state_image.copy(), None, None, True, overlay)
+                robosub.findGate(self.state_image.copy(), None, None, True, overlay, True)
 
                 self.overlay_pub.publish(self.bridge.cv2_to_imgmsg(overlay, "bgr8"))
                 rate.sleep();

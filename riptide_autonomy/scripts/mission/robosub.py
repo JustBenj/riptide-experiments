@@ -91,6 +91,10 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 	hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 	box = None
 
+	x = 0
+	y = 0 
+	angle = None
+
 	mask = cv2.inRange(hsv, lower_blazeorange ,upper_blazeorange)
 
 	gray = cv2.bilateralFilter(mask, 11, 17, 17)
@@ -116,7 +120,6 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
     		else:
     			dy = leg1[1] - leg2[1]
 
-    		angle = None
     		if math.tan(dy / (1.0 * dx)) < 0:
     			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
     		else:
@@ -124,12 +127,29 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
     		x_mid = min(leg1[0], leg2[0]) + dx / 2.0
     		y_mid = min(leg1[1], leg2[1]) + dy / 2.0
 
-    		y_adj = 1 if y_mid < overlay.shape[0] else -1
-    		x_adj = 1 if x_mid < overlay.shape[1] else -1
+    		x = 1 if y_mid < overlay.shape[0] / 2 else -1
+    		y = 1 if x_mid < overlay.shape[1] / 2 else -1
 
     		if draw_tf:
     			cv2.line(overlay, leg1, leg2, (0,255,255), 2)
 
-    		return x_adj, y_adj, angle
-
-	return
+	elif len(contours) == 1:
+		min_x = 9999
+		x = 0
+		y = 0
+		cnt = contours[0]
+		box = getRotatedRect(cnt, overlay)
+		for pair in box:
+			if pair[0] < min_x:
+				min_x = pair[0]
+			if pair[1] < min_y:
+				min_y = pair[1]
+		if min_x > overlay.shape[1] / 2:
+			x = 1
+		else:
+			x = -1
+		if min_y > overlay.shape[0] / 2:
+			y = 1
+		else:
+			y = -1
+	return x, y, angle
