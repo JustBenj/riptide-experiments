@@ -34,9 +34,9 @@ class Validation_Gate_ST(smach.State):
         self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_X_POS)
 
     def align(self):
-        max_y_error = 10
-        max_z_error = 10
-        max_theta_error = 8
+        max_y_error = 1
+        max_z_error = 1
+        max_theta_error = 0.5
 
         if self.state_image is not None:
             overlay = self.state_image.copy()
@@ -48,22 +48,22 @@ class Validation_Gate_ST(smach.State):
             print ("\n")
             # TODO: Potential infinite loop. Add timeout or something....!
             #TODO: If can't see anything, return outcome of failure
-            if y is not None and y > max_y_error:
+            if y is not None and y >= max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
-
-            elif y is not None and y < -max_y_error:
+                
+            elif y is not None and y <= -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
 
-            elif z is not None and z > max_z_error:
+            elif z is not None and z >= max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
 
-            elif z is not None and z < -max_z_error:
+            elif z is not None and z <= -max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_POS)
 
-            elif theta is not None and theta > max_theta_error:
+            elif theta is not None and theta >= max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CCW)
 
-            elif theta is not None and theta < -max_theta_error:
+            elif theta is not None and theta <= -max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CW)
 
             # It should be impossible for theta to be None at this point
@@ -88,6 +88,7 @@ class Validation_Gate_ST(smach.State):
                 isAligned = self.align()
             else:
                 self.approach()
+                print("Aligned, approach")
 
             timer += 1;
             rate.sleep();
