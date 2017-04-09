@@ -5,7 +5,7 @@ import math
 lower_red0 = np.array([0,100,60])
 upper_red0 = np.array([15,255,255])
 
-lower_blazeorange = np.array([7, 204, 204])
+lower_blazeorange = np.array([7, 204, 100])
 upper_blazeorange = np.array([15, 255,255])
 
 def pixelsToFeet(pixels):
@@ -90,7 +90,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 	blur = cv2.GaussianBlur(frame,(5,5),0)
 	hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
 	box = None
-	bounding_box_width = 300
+	bounding_box_width = 200
 	bounding_box_height = 200
 	x = 0
 	y = 0
@@ -107,8 +107,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 	print len(contours)
 	if len(contours) >= 2:
 		if draw_tf:
-			cv2.drawContours(overlay, contours, 0, (0,255,0), 3)
-			cv2.drawContours(overlay, contours, 1, (0,255,0), 3)
+			cv2.drawContours(overlay, contours, -1, (0,255,0), 3)
 
 		cnt = contours[0]
 		box = getRotatedRect(cnt, overlay)
@@ -163,4 +162,8 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
    			y = -1
    		elif min_y > overlay.shape[1] / 2 + bounding_box_height:
    			x_mid = 1
+   	if draw_tf:
+		cv2.line(overlay,(overlay.shape[0] / 2 - bounding_box_width,0),(overlay.shape[0] / 2 - bounding_box_width, 9999),(255,0,0),3)
+		cv2.line(overlay,(overlay.shape[0] / 2 + bounding_box_width,0),(overlay.shape[0] / 2 + bounding_box_width, 9999),(255,0,0),3)
+
 	return x, y, angle

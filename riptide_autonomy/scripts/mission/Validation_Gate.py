@@ -42,18 +42,20 @@ class Validation_Gate_ST(smach.State):
             overlay = self.state_image.copy()
             (y, z, theta) = robosub.findGate(self.state_image.copy(), None, None, True, overlay, True)
             self.overlay_pub.publish(self.bridge.cv2_to_imgmsg(overlay, "bgr8"))
-            print (y)
+            print (-y)
             print (z)
             print (theta)
             print ("\n")
             # TODO: Potential infinite loop. Add timeout or something....!
             #TODO: If can't see anything, return outcome of failure
-            if y is not None and y > max_y_error:
-                self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
-                print "Translate -Y"
-            elif y is not None and y < -max_y_error:
+
+            #Y values are flipped.. (Y = -Y)
+            if y is not None and y >= max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
                 print "Translate +Y"
+            elif y is not None and y < -max_y_error:
+                self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
+                print "Translate -Y"
             elif z is not None and z > max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
                 print "Translate -Z"
@@ -88,6 +90,7 @@ class Validation_Gate_ST(smach.State):
                 isAligned = self.align()
             else:
                 self.approach()
+                print("Aligned, approach")
 
             timer += 1;
             rate.sleep();
