@@ -51,11 +51,11 @@ class Validation_Gate_ST(smach.State):
 
             #Y values are flipped.. (Y = -Y)
             if y is not None and y >= max_y_error:
-                self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
-                print "Translate +Y"
-            elif y is not None and y < -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
                 print "Translate -Y"
+            elif y is not None and y < -max_y_error:
+                self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
+                print "Translate +Y"
             elif z is not None and z > max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
                 print "Translate -Z"
@@ -85,7 +85,8 @@ class Validation_Gate_ST(smach.State):
 
         while not rospy.is_shutdown():
             if (timer < approachTimeout):
-                self.approach()
+                pass
+                #self.approach()
             elif not isAligned:
                 isAligned = self.align()
             else:
