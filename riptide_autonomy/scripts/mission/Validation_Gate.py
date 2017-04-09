@@ -34,9 +34,9 @@ class Validation_Gate_ST(smach.State):
         self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_X_POS)
 
     def align(self):
-        max_y_error = 10
-        max_z_error = 10
-        max_theta_error = 8
+        max_y_error = 1
+        max_z_error = 1
+        max_theta_error = 0.5
 
         if self.state_image is not None:
             overlay = self.state_image.copy()
@@ -50,22 +50,22 @@ class Validation_Gate_ST(smach.State):
             #TODO: If can't see anything, return outcome of failure
             if y is not None and y > max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
-
+                print "Translate -Y"
             elif y is not None and y < -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
-
+                print "Translate +Y"
             elif z is not None and z > max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
-
+                print "Translate -Z"
             elif z is not None and z < -max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_POS)
-
+                print "Translate +Z"
             elif theta is not None and theta > max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CCW)
-
+                print "Rotate -Z (CCW)"
             elif theta is not None and theta < -max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CW)
-
+                print "Rotate +Z (CW)"
             # It should be impossible for theta to be None at this point
             elif theta is not None:
                 return True
