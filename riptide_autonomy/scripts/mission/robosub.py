@@ -161,9 +161,12 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
    		if min_y < overlay.shape[1] / 2 - bounding_box_height:
    			y = -1
    		elif min_y > overlay.shape[1] / 2 + bounding_box_height:
-   			x_mid = 1
+   			y = 1
    	if draw_tf:
 		cv2.line(overlay,(overlay.shape[0] / 2 - bounding_box_width,0),(overlay.shape[0] / 2 - bounding_box_width, 9999),(255,0,0),3)
 		cv2.line(overlay,(overlay.shape[0] / 2 + bounding_box_width,0),(overlay.shape[0] / 2 + bounding_box_width, 9999),(255,0,0),3)
+
+		cv2.line(overlay,(0,overlay.shape[1] / 2 - bounding_box_height),(9999,overlay.shape[1] / 2 - bounding_box_height),(255,0,0),3)
+		cv2.line(overlay,(0,overlay.shape[1] / 2 + bounding_box_height),(9999,overlay.shape[1] / 2 + bounding_box_height),(255,0,0),3)
 
 	return x, y, angle

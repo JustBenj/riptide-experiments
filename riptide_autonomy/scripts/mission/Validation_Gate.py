@@ -50,7 +50,7 @@ class Validation_Gate_ST(smach.State):
             #TODO: If can't see anything, return outcome of failure
             if y is not None and y >= max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
-                
+
             elif y is not None and y <= -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
 
@@ -83,7 +83,8 @@ class Validation_Gate_ST(smach.State):
 
         while not rospy.is_shutdown():
             if (timer < approachTimeout):
-                self.approach()
+                pass
+                #self.approach()
             elif not isAligned:
                 isAligned = self.align()
             else:
