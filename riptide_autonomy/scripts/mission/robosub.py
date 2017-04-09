@@ -124,24 +124,25 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
     		else:
     			dy = leg1[1] - leg2[1]
 
-    		if math.tan(dy / (1.0 * dx)) < 0:
-    			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
-    		else:
-    			angle = math.degrees(math.tan(dy / (1.0 * dx)))
-    		x_mid = min(leg1[0], leg2[0]) + dx / 2.0
-    		y_mid = min(leg1[1], leg2[1]) + dy / 2.0
+    		if dx > 0 and dy > 0:
+	    		if math.tan(dy / (1.0 * dx)) < 0:
+	    			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
+	    		else:
+	    			angle = math.degrees(math.tan(dy / (1.0 * dx)))
+	    		x_mid = min(leg1[0], leg2[0]) + dx / 2.0
+	    		y_mid = min(leg1[1], leg2[1]) + dy / 2.0
 
-    		if x_mid < overlay.shape[0] / 2 - bounding_box_width:
-    			x = -1
-    		elif x_mid > overlay.shape[0] / 2 + bounding_box_width:
-    			x = 1
-    		if y_mid < overlay.shape[1] / 2 - bounding_box_height:
-    			y = -1
-    		elif y_mid > overlay.shape[1] / 2 + bounding_box_height:
-    			x_mid = 1
+	    		if x_mid < overlay.shape[0] / 2 - bounding_box_width:
+	    			x = -1
+	    		elif x_mid > overlay.shape[0] / 2 + bounding_box_width:
+	    			x = 1
+	    		if y_mid < overlay.shape[1] / 2 - bounding_box_height:
+	    			y = -1
+	    		elif y_mid > overlay.shape[1] / 2 + bounding_box_height:
+	    			x_mid = 1
 
-    		if draw_tf:
-    			cv2.line(overlay, leg1, leg2, (0,255,255), 2)
+	    		if draw_tf:
+	    			cv2.line(overlay, leg1, leg2, (0,255,255), 2)
 
 	elif len(contours) == 1:
 		x = 0
