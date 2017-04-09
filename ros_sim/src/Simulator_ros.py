@@ -80,10 +80,12 @@ def callback(data):
 		update_robot_position(entities[0], ROBOT_SPEED, 0)
 	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_X_NEG", "tx-"):
 		update_robot_position(entities[0], -1 * ROBOT_SPEED, 0)
+
 	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_Y_NEG", "ty-"):
-		update_robot_position(entities[0], ROBOT_SPEED, 1)
-	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_Y_POS", "ty+"):
 		update_robot_position(entities[0], -1 * ROBOT_SPEED, 1)
+	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_Y_POS", "ty+"):
+		update_robot_position(entities[0], ROBOT_SPEED, 1)
+
 	elif direction == rospy.get_param("constants/COMMAND_ROTATE_Z_CW", "rz+"):
 		entities[0].orientation -= ROBOT_ROTATE_SPEED
 	elif direction == rospy.get_param("constants/COMMAND_ROTATE_Z_CCW", "rz-"):
