@@ -104,6 +104,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 	gray = cv2.bilateralFilter(mask, 11, 17, 17)
 	edged = cv2.Canny(gray, 30, 200)
 	im, contours, hierarchy = cv2.findContours(edged,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+	print len(contours)
 	if len(contours) >= 2:
 		if draw_tf:
 			cv2.drawContours(overlay, contours, 0, (0,255,0), 3)

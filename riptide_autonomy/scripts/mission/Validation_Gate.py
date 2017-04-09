@@ -50,18 +50,22 @@ class Validation_Gate_ST(smach.State):
             #TODO: If can't see anything, return outcome of failure
             if y is not None and y > max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
+
             elif y is not None and y < -max_y_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Y_POS)
 
             elif z is not None and z > max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
+
             elif z is not None and z < -max_z_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_TRANSLATE_Z_POS)
 
             elif theta is not None and theta > max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CCW)
+
             elif theta is not None and theta < -max_theta_error:
                 self.command_pub.publish(RiptideConstants.COMMAND_ROTATE_Z_CW)
+
             # It should be impossible for theta to be None at this point
             elif theta is not None:
                 return True

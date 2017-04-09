@@ -3,6 +3,7 @@
 import rospy
 import smach
 import smach_ros
+from riptide_constants import RiptideConstants
 from Validation_Gate import *
 #from Set_Sail import *
 #from Navigation_Pass import *
@@ -62,4 +63,29 @@ def main():
 
 
 if __name__ == '__main__':
+    
+    rospy.set_param("constants/LINEAR_X_ACCEL", RiptideConstants.LINEAR_X_ACCEL)
+    rospy.set_param("constants/LINEAR_Y_ACCEL", RiptideConstants.LINEAR_Y_ACCEL)
+    rospy.set_param("constants/LINEAR_Z_ACCEL", RiptideConstants.LINEAR_Z_ACCEL)
+
+    rospy.set_param("constants/ANGULAR_X_ACCEL", RiptideConstants.ANGULAR_X_ACCEL)
+    rospy.set_param("constants/ANGULAR_Y_ACCEL", RiptideConstants.ANGULAR_Y_ACCEL)
+    rospy.set_param("constants/ANGULAR_Z_ACCEL", RiptideConstants.ANGULAR_Z_ACCEL)
+
+    rospy.set_param("constants/COMMAND_TRANSLATE_X_POS", RiptideConstants.COMMAND_TRANSLATE_X_POS)
+    rospy.set_param("constants/COMMAND_TRANSLATE_Y_POS", RiptideConstants.COMMAND_TRANSLATE_Y_POS)
+    rospy.set_param("constants/COMMAND_TRANSLATE_Z_POS", RiptideConstants.COMMAND_TRANSLATE_Z_POS)
+    
+    rospy.set_param("constants/COMMAND_ROTATE_X_CW", RiptideConstants.COMMAND_ROTATE_X_CW)
+    rospy.set_param("constants/COMMAND_ROTATE_Y_CW", RiptideConstants.COMMAND_ROTATE_Y_CW)
+    rospy.set_param("constants/COMMAND_ROTATE_Z_CW", RiptideConstants.COMMAND_ROTATE_Z_CW)
+
+    rospy.set_param("constants/COMMAND_TRANSLATE_X_NEG", RiptideConstants.COMMAND_TRANSLATE_X_NEG)
+    rospy.set_param("constants/COMMAND_TRANSLATE_Y_NEG", RiptideConstants.COMMAND_TRANSLATE_Y_NEG)
+    rospy.set_param("constants/COMMAND_TRANSLATE_Z_NEG", RiptideConstants.COMMAND_TRANSLATE_Z_NEG)
+
+    rospy.set_param("constants/COMMAND_ROTATE_X_CCW", RiptideConstants.COMMAND_ROTATE_X_CCW)
+    rospy.set_param("constants/COMMAND_ROTATE_Y_CCW", RiptideConstants.COMMAND_ROTATE_Y_CCW)
+    rospy.set_param("constants/COMMAND_ROTATE_Z_CCW", RiptideConstants.COMMAND_ROTATE_Z_CCW)
+
     main()

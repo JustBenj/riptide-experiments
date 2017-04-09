@@ -9,7 +9,6 @@ import DebugViewer_ros
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
-
 entities = []
 FRAME_RATE = 20
 ROBOT_SPEED = 2 #no units
@@ -76,18 +75,18 @@ def load_entities():
 
 def callback(data):
 	direction = data.data
-
-	if direction == "tx+":
+	print direction
+	if direction == rospy.get_param("constants/COMMAND_TRANSLATE_X_POS", "tx+"):
 		update_robot_position(entities[0], ROBOT_SPEED, 0)
-	elif direction == "tx-":
+	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_X_NEG", "tx-"):
 		update_robot_position(entities[0], -1 * ROBOT_SPEED, 0)
-	elif direction == "ty-":
+	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_Y_NEG", "ty-"):
 		update_robot_position(entities[0], ROBOT_SPEED, 1)
-	elif direction == "ty+":
+	elif direction == rospy.get_param("constants/COMMAND_TRANSLATE_Y_POS", "ty+"):
 		update_robot_position(entities[0], -1 * ROBOT_SPEED, 1)
-	elif direction == 'rx+':
+	elif direction == rospy.get_param("constants/COMMAND_ROTATE_Z_CW", "rz+"):
 		entities[0].orientation -= ROBOT_ROTATE_SPEED
-	elif direction == "rx-":
+	elif direction == rospy.get_param("constants/COMMAND_ROTATE_Z_CCW", "rz-"):
 		entities[0].orientation += ROBOT_ROTATE_SPEED
 
 if __name__ == '__main__':
