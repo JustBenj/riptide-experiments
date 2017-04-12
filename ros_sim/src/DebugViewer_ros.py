@@ -23,6 +23,7 @@ class DebugViewer:
 
 		self.bridge = CvBridge()
 		self.viewport_pub = rospy.Publisher('sim_view', Image, queue_size=10)
+		self.viewport_pub_dev = rospy.Publisher('dev_view', Image, queue_size = 10)
 		self.entities_ref = entities
 		self.robot = self.entities_ref[0]
 		self.create_viewer_image_dictionary()
@@ -72,6 +73,11 @@ class DebugViewer:
 
 		obj_resized = cv2.resize(self.world_item_dictionary[obj.name], None, fx=obj_draw_proportion, fy=obj_draw_proportion, interpolation = cv2.INTER_LINEAR)
 		
+		bordersize = 100
+		obj_resized = cv2.copyMakeBorder(obj_resized, top=bordersize, bottom=bordersize, left=bordersize, right=bordersize, borderType= cv2.BORDER_CONSTANT, value=[0,0,0] )
+
+
+
 		orientation_difference = self.robot.orientation - obj.orientation
 
 		side = -1
@@ -100,8 +106,11 @@ class DebugViewer:
 		inputQuad = np.array([[0,0], [obj_resized.shape[1] - 1, 0], [obj_resized.shape[1] - 1, obj_resized.shape[0] - 1], [ 0, obj_resized.shape[0] - 1]], dtype = "float32")
 
 		M = cv2.getPerspectiveTransform(inputQuad, outputQuad)
-		warped = cv2.warpPerspective(obj_resized, M, (obj_resized.shape[1] - 1, obj_resized.shape[0] - 1))
 
+		warp_mult = 2.0
+		warped = cv2.warpPerspective(obj_resized, M, (int(warp_mult * obj_resized.shape[1]) - 1, int(warp_mult * obj_resized.shape[0]) - 1))
+
+		warped = self.crop_warped_image(warped)
 		#cv2.putText(warped, str(warped.shape[0]), (20,20), 1, 1, (255,255,255))
 		#cv2.putText(warped, str(warped.shape[1]), (20,40), 1, 1, (255,255,255))
 
@@ -122,9 +131,12 @@ class DebugViewer:
 		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		_, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
 
-		contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+		_, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 		cnt = contours[0]
 		x,y,w,h = cv2.boundingRect(cnt)
+
+		img3 = self.bridge.cv2_to_imgmsg(thresh, "mono8")
+		self.viewport_pub_dev.publish(img3)
 
 		return img[y:y+h,x:x+w]
 
