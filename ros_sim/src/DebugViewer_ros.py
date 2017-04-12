@@ -118,6 +118,15 @@ class DebugViewer:
 		except:
 			pass
 
+	def crop_warped_image(self, img):
+		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		_, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
+
+		contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+		cnt = contours[0]
+		x,y,w,h = cv2.boundingRect(cnt)
+
+		return img[y:y+h,x:x+w]
 
 	def find_angle_from_bot_to_obj(self, robot, ent):
 		dX = ent.x_pos - robot.x_pos
