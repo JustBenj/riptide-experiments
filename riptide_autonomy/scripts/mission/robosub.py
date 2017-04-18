@@ -132,9 +132,9 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 
     		if dx > 0 and dy > 0:
 	    		if np.arctan(dy / (1.0 * dx)) < 0 or np.arctan(dy / (1.0 * dx)) > np.pi:
-	    			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
+	    			angle = math.degrees(np.arctan(dy / (1.0 * dx))) - 360
 	    		else:
-	    			angle = math.degrees(math.tan(dy / (1.0 * dx)))
+	    			angle = math.degrees(np.arctan(dy / (1.0 * dx)))
 	    		x_mid = min(leg1[0], leg2[0]) + dx / 2.0
 	    		y_mid = min(leg1[1], leg2[1]) + dy / 2.0
 
