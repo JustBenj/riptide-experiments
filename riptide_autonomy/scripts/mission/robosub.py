@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import math
 
+
 lower_red0 = np.array([0,100,60])
 upper_red0 = np.array([15,255,255])
 
@@ -125,7 +126,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
     			dy = leg1[1] - leg2[1]
 
     		if dx > 0 and dy > 0:
-	    		if math.tan(dy / (1.0 * dx)) < 0:
+	    		if math.tan(dy / (1.0 * dx)) < 0 or math.tan(dy / (1.0 * dx)) > np.pi:
 	    			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
 	    		else:
 	    			angle = math.degrees(math.tan(dy / (1.0 * dx)))
