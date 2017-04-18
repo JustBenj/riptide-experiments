@@ -87,6 +87,11 @@ def getRotatedRect(contour, overlay):
 	cv2.drawContours(overlay,[box],0,(255,255,255),2)
 	return box
 
+def angle_between(p1, p2):
+    ang1 = np.arctan2(p1.y, p1.x)
+    ang2 = np.arctan2(p2.y, p2.x)
+    return np.rad2deg((ang1 - ang2) % (2 * np.pi))
+
 def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
 	blur = cv2.GaussianBlur(frame,(5,5),0)
 	hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
@@ -126,7 +131,7 @@ def findGate(frame, lower, upper, blazeOrange, overlay, draw_tf):
     			dy = leg1[1] - leg2[1]
 
     		if dx > 0 and dy > 0:
-	    		if math.tan(dy / (1.0 * dx)) < 0 or math.tan(dy / (1.0 * dx)) > np.pi:
+	    		if np.arctan(dy / (1.0 * dx)) < 0 or np.arctan(dy / (1.0 * dx)) > np.pi:
 	    			angle = math.degrees(math.tan(dy / (1.0 * dx))) - 360
 	    		else:
 	    			angle = math.degrees(math.tan(dy / (1.0 * dx)))
